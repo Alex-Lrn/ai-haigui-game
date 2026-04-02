@@ -8,6 +8,8 @@ export default function Result() {
   const location = useLocation()
   const story = stories.find((s) => s.id === id)
 
+  const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
+
   const initialState = location.state as
     | { messages?: TMessage[]; bottom?: string }
     | undefined
@@ -32,7 +34,7 @@ export default function Result() {
     if (bottom) return
 
     let cancelled = false
-    fetch(`/api/story-bottom/${story.id}`)
+    fetch(`${apiBaseUrl}/api/story-bottom/${story.id}`)
       .then(async (res) => {
         if (!res.ok) {
           const t = await res.text().catch(() => '')
@@ -54,7 +56,7 @@ export default function Result() {
     return () => {
       cancelled = true
     }
-  }, [story, bottom])
+  }, [story, bottom, apiBaseUrl])
 
   if (!story) {
     return (

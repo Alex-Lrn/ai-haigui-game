@@ -18,6 +18,8 @@ export default function Game() {
     return stories.find((s) => s.id === id)
   }, [id])
 
+  const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
+
   const [messages, setMessages] = useState<TMessage[]>(() => {
     const state = location.state as { messages?: TMessage[] } | undefined
     return state?.messages
@@ -38,7 +40,7 @@ export default function Game() {
     if (!story) return
     let cancelled = false
 
-    fetch(`/api/story-bottom/${story.id}`)
+    fetch(`${apiBaseUrl}/api/story-bottom/${story.id}`)
       .then(async (res) => {
         if (!res.ok) {
           const t = await res.text().catch(() => '')
@@ -64,7 +66,7 @@ export default function Game() {
     return () => {
       cancelled = true
     }
-  }, [story])
+  }, [story, apiBaseUrl])
 
   const onSend = async (question: string) => {
     if (!story) return
